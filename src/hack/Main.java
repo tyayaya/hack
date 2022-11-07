@@ -17,20 +17,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Main {
 	public static void main(String[] args) {
-		String filePath = "src/sample_students.json";
-		//String filePath = "src/sample_teachers.json";
+		String filePath1 = "src/sample_students.json";
+		String filePath2 = "src/sample_teachers.json";
 		try {
-			String inJson = getJson(filePath);
-			List<Object> List = jsonToMap(inJson);
-			System.out.println(List);
-			//List<String> subject = getTeacherSubject(List);
-			//List<String> day = getTeacherDay(List);
-			List<String> subject = getStudentSubject(List);
-			List<String> day = getStudentDay(List);
-			//System.out.println("教科:"+subject);
-			//System.out.println("日:"+day);
-			String outJson = mapToJson(List);
-			outputJson(outJson, "src/output.json");
+			String inJson1 = getJson(filePath1);
+			String inJson2 = getJson(filePath2);
+			List<Object> List1 = jsonToMap(inJson1);
+			List<Object> List2 = jsonToMap(inJson2);
+			List<Student> students = getStudentData(List1);
+			List<Teacher> teachers = getTeacherData(List2);
+			List<String> data = shapeData( teachers, students);
+			System.out.println(data);
+			//String outJson = mapToJson(List);
+			//outputJson(outJson, "src/output.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,61 +76,63 @@ public class Main {
 			}
 	}
 	
-	public static List<String> getTeacherSubject(List<Object> list) {
-		List<String> can = new ArrayList<String>();
+	public static List<Teacher> getTeacherData(List<Object> list) {
+		List<Teacher> teachers = new ArrayList<>();
 		List<Map<String, Object>> nlist = (List<Map<String, Object>>)(List<?>)list;
 		for(Map<String, Object> map : nlist) {
 			String name = (String)map.get("name");
 			List<String> subjects = (List<String>)map.get("subject");
-			for(String subject : subjects) {
-				can.add(name + " can " + subject);
-			}
+			Map<String, List<String>> timetable = (Map<String, List<String>>)map.get("timetable");
+			Teacher teacher = new Teacher(name, subjects, timetable);
+			teachers.add(teacher);
 		}
-		return can;
+		return teachers;
 	}
 	
-	public static List<String> getTeacherDay(List<Object> list) {
-		List<String> vacant = new ArrayList<String>();
-		List<Map<String, Object>> nlist = (List<Map<String, Object>>)(List<?>)list;
-		for(Map<String, Object> map : nlist) {
-			String name = (String)map.get("name");
-			Map<String, Object> timetable = (Map<String, Object>)map.get("timetable");
-			for(String day : timetable.keySet()) {
-				List<String> timeset = (List<String>)timetable.get(day);
-				for(String time : timeset) {
-					vacant.add(name + " vacant " + day + "|" + time);
-				}
-			}
-		}
-		return vacant;
-	}
-	
-	public static List<String> getStudentSubject(List<Object> list) {
-		List<String> can = new ArrayList<String>();
+	public static List<Student> getStudentData(List<Object> list) {
+		List<Student> students = new ArrayList<>();
 		List<Map<String, Object>> nlist = (List<Map<String, Object>>)(List<?>)list;
 		for(Map<String, Object> map : nlist) {
 			String name = (String)map.get("name");
 			List<String> subjects = (List<String>)map.get("subject");
-			for(String subject : subjects) {
-				can.add(name + " take " + subject);
-			}
+			Map<String, List<String>> timetable = (Map<String, List<String>>)map.get("timetable");
+			Student student = new Student(name, subjects, timetable);
+			students.add(student);
 		}
-		return can;
+		return students;
 	}
 	
-	public static List<String> getStudentDay(List<Object> list) {
-		List<String> vacant = new ArrayList<String>();
-		List<Map<String, Object>> nlist = (List<Map<String, Object>>)(List<?>)list;
-		for(Map<String, Object> map : nlist) {
-			String name = (String)map.get("name");
-			Map<String, Object> timetable = (Map<String, Object>)map.get("timetable");
+	public static List<String> shapeData(List<Teacher> teachers, List<Student> students){
+		List<String> datas = new ArrayList<>();
+		for(Teacher teacher : teachers) {
+			String name = teacher.getName();
+			List<String> subjects = teacher.getSubjects();
+			Map<String, List<String>> timetable = teacher.getTimetable();
+			for(String subject : subjects) {
+				datas.add(name + " can " + subject);
+			}
 			for(String day : timetable.keySet()) {
 				List<String> timeset = (List<String>)timetable.get(day);
 				for(String time : timeset) {
-					vacant.add(name + " convenient " + day + "|" + time);
+					datas.add(name + " vacant " + day + "|" + time);
 				}
 			}
 		}
-		return vacant;
+		for(Student student : students) {
+			String name = student.getName();
+			List<String> subjects = student.getSubjects();
+			Map<String, List<String>> timetable = student.getTimetable();
+			for(String subject : subjects) {
+				datas.add(name + " take " + subject);
+			}
+			for(String day : timetable.keySet()) {
+				List<String> timeset = (List<String>)timetable.get(day);
+				for(String time : timeset) {
+					datas.add(name + " convenient " + day + "|" + time);
+				}
+			}
+		}
+		return datas;
 	}
+	
 }

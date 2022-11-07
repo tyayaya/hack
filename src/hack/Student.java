@@ -1,16 +1,17 @@
 package hack;
 
 import java.util.List;
+import java.util.Map;
 
 public class Student {
 	private String name;
 	private List<String> subjects;
-	private List<String> days;
+	private Map<String, List<String>> timetable;
 	
-	Student(String name, List<String> subjects, List<String> days){
+	Student(String name, List<String> subjects, Map<String, List<String>> timetable){
 		this.name = name;
 		this.subjects = subjects;
-		this.days = days;
+		this.timetable = timetable;
 	}
 	
 	public void setName(String name) {
@@ -21,8 +22,8 @@ public class Student {
 		this.subjects = subjects;
 	}
 	
-	public void setDays(List<String> days) {
-		this.days = days;
+	public void setTimetable(Map<String, List<String>> timetable) {
+		this.timetable = timetable;
 	}
 	
 	public String getName() {
@@ -33,8 +34,8 @@ public class Student {
 		return this.subjects;
 	}
 	
-	public List<String> getDays() {
-		return this.days;
+	public Map<String, List<String>> getTimetable() {
+		return this.timetable;
 	}
 
 }
