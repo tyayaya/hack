@@ -22,12 +22,13 @@ public class Main {
 		try {
 			String inJson = getJson(filePath);
 			List<Object> List = jsonToMap(inJson);
+			System.out.println(List);
 			//List<String> subject = getTeacherSubject(List);
 			//List<String> day = getTeacherDay(List);
 			List<String> subject = getStudentSubject(List);
 			List<String> day = getStudentDay(List);
-			System.out.println("教科:"+subject);
-			System.out.println("日:"+day);
+			//System.out.println("教科:"+subject);
+			//System.out.println("日:"+day);
 			String outJson = mapToJson(List);
 			outputJson(outJson, "src/output.json");
         } catch (IOException e) {
