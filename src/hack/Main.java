@@ -28,7 +28,7 @@ public class Main {
 			List<Teacher> teachers = getTeacherData(List2);
 			List<String> data = shapeData( teachers, students);
 			System.out.println(data);
-			//String outJson = mapToJson(List);
+			//String outJson = mapToJson();
 			//outputJson(outJson, "src/output.json");
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,7 +96,9 @@ public class Main {
 			String name = (String)map.get("name");
 			List<String> subjects = (List<String>)map.get("subject");
 			Map<String, List<String>> timetable = (Map<String, List<String>>)map.get("timetable");
-			Student student = new Student(name, subjects, timetable);
+			int attend = (int)map.get("attend");
+			List<String> like = (List<String>)map.get("like");
+			Student student = new Student(name, subjects, timetable, attend, like);
 			students.add(student);
 		}
 		return students;
@@ -122,17 +124,24 @@ public class Main {
 			String name = student.getName();
 			List<String> subjects = student.getSubjects();
 			Map<String, List<String>> timetable = student.getTimetable();
+			int attend = student.getAttend();
+			List<String> like = student.getLike();
+			datas.add(name + " attend " + attend + " times");
 			for(String subject : subjects) {
 				datas.add(name + " take " + subject);
 			}
 			for(String day : timetable.keySet()) {
 				List<String> timeset = (List<String>)timetable.get(day);
 				for(String time : timeset) {
-					datas.add(name + " convenient " + day + "|" + time);
+					datas.add(name + " convenient " + day + " | " + time);
 				}
+			}
+			for(String l : like) {
+				datas.add(name + " like " + l);
 			}
 		}
 		return datas;
 	}
 	
 }
+
